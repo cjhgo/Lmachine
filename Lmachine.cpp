@@ -78,6 +78,31 @@ void Lmachine::Load()
 {
 	while (!LmachineToken.empty())
 	{
-		OperandMem[PC].op = Token2Op(LmachineToken.front());
+		OperandMem[PC].op = Token2Op(LmachineToken.front());//ªÒ»°÷∏¡Ó
+		LmachineToken.pop();
+		//data1
+		if (Token2Int(LmachineToken.front()) < 0 || Token2Int(LmachineToken.front()) >= RegisterNum)
+		{
+			Error("data1:no such register");
+			break;
+		}
+		OperandMem[PC].data1 = Token2Int(LmachineToken.front());
+		LmachineToken.pop();
+		//data2
+		if (Token2Int(LmachineToken.front()) < 0 || Token2Int(LmachineToken.front()) >= RegisterNum)
+		{
+			Error("data1:no such register");
+			break;
+		}
+		OperandMem[PC].data2 = Token2Int(LmachineToken.front());
+		LmachineToken.pop();
+		//data3
+		if (OperandMem[PC].op<OpRRMODE&&(Token2Int(LmachineToken.front()) < 0 || Token2Int(LmachineToken.front()) >= RegisterNum))
+		{
+			Error("data1:no such register");
+			break;
+		}
+		OperandMem[PC].data1 = Token2Int(LmachineToken.front());
+		LmachineToken.pop();
 	}
 }

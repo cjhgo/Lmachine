@@ -23,7 +23,7 @@ enum Operand
 	OpSUB,
 	OpMUL,
 	OpDIV,
-	OpRRMODE,//寄存器寻址
+	OpRRMODE,//寄存器寻址方式限制
 	//RM 
 	OpLOAD,//读取
 	OpSTORE,//存储
@@ -128,8 +128,9 @@ public:
 	void Init();//初始化
 	void ReadLine();//将FILE类型Code名字读取到LmachineToken中
 	void Load();//加载汇编代码到只读指令存储区
-	string Error();//输出错误信息
+	string Error(string error);//输出错误信息
 	Operand Token2Op(Token token);//将Token转换为枚举类型的Operand
+	int Token2Int(Token token);
 	int OpClass(int c);//根据c的值在Operand枚举查找指令的类型
 };
 
