@@ -13,7 +13,6 @@ void Lmachine::Init()
 	/*
 		初始化
 	*/
-	PC = 0;
 	Data[0] = Data_SIZE - 1;
 	for (int i = 1; i < Data_SIZE; i++) //清空数据区
 		Data[i] = 0;
@@ -76,9 +75,10 @@ int Lmachine::OpClass(int c)
 //将指令加载到只读指令存储区
 void Lmachine::Load()
 {
+	int i = 0;
 	while (!LmachineToken.empty())
 	{
-		OperandMem[PC].op = Token2Op(LmachineToken.front());//获取指令
+		OperandMem[i].op = Token2Op(LmachineToken.front());//获取指令
 		LmachineToken.pop();
 		//data1
 		if (Token2Int(LmachineToken.front()) < 0 || Token2Int(LmachineToken.front()) >= RegisterNum)
@@ -86,7 +86,7 @@ void Lmachine::Load()
 			Error("data1:no such register");
 			break;
 		}
-		OperandMem[PC].data1 = Token2Int(LmachineToken.front());
+		OperandMem[i].data1 = Token2Int(LmachineToken.front());
 		LmachineToken.pop();
 		//data2
 		if (Token2Int(LmachineToken.front()) < 0 || Token2Int(LmachineToken.front()) >= RegisterNum)
@@ -94,15 +94,105 @@ void Lmachine::Load()
 			Error("data1:no such register");
 			break;
 		}
-		OperandMem[PC].data2 = Token2Int(LmachineToken.front());
+		OperandMem[i].data2 = Token2Int(LmachineToken.front());
 		LmachineToken.pop();
 		//data3
-		if (OperandMem[PC].op<OpRRMODE&&(Token2Int(LmachineToken.front()) < 0 || Token2Int(LmachineToken.front()) >= RegisterNum))
+		if (OperandMem[i].op<OpRRMODE&&(Token2Int(LmachineToken.front()) < 0 || Token2Int(LmachineToken.front()) >= RegisterNum))
 		{
 			Error("data1:no such register");
 			break;
 		}
-		OperandMem[PC].data1 = Token2Int(LmachineToken.front());
+		OperandMem[i].data1 = Token2Int(LmachineToken.front());
 		LmachineToken.pop();
+		i++;
 	}
 }
+//运行虚拟机
+void Lmachine::Run()
+{
+	Command * command = NULL;
+	Result result; //运行结果
+	command = &OperandMem[Register[PC_Regist]];
+	while (command->op != OpHLT)
+	{
+		if ((result = OpRun(command)) != OK)
+			Error(ResultTable[result]);
+		if (command->op < OpJLT)
+			Register[PC_Regist]++;
+		command = &OperandMem[Register[PC_Regist]];
+
+	}
+}
+//指令执行
+Result Lmachine::OpRun(Command * command)
+{
+	switch (command->op)
+	{
+	case OpIN:	return In_Instruction(command);
+	case OpOUT:	return Out_Instruction(command);
+	case OpADD: return Add_Instruction(command);
+	case OpSUB:	return Sub_Instruction(command);
+	case OpMUL:	return Mul_Instruction(command);
+	case OpDIV:	return Div_Instruction(command);
+	case OpLOAD:return Load_Instruction(command);
+	case OpSTORE:return Store_Instruction(command);
+	case OpLDA:	return Lad_Instruction(command);
+	case OpLDC:return Ldc_Instruction(command);
+	case OpJLT:return Jlt_Instruction(command);
+	case OpJLE:return Jle_Instruction(command);
+	case OpJGT:return Jgt_Instruction(command);
+	case OpJGE:return Jge_Instruction(command);
+	case OpJEQ:return Jeq_Instruction(command);
+	case OpJNE:return Jne_Instruction(command);
+	default:
+		Error("None Command");
+		break;
+	}
+}
+Result Lmachine::In_Instruction(Command *command)
+{
+	int data = command->data1;
+	cin >> Register[data];
+	return OK;
+}
+Result Lmachine::Out_Instruction(Command * command)
+{
+	int data = command->data1;
+	cout << Register[data] << endl;
+	return OK;
+}
+Result Lmachine::Add_Instruction(Command * command)
+{
+	int num1 = command->data1;
+	int num2 = command->data2;
+	int num3 = command->data3;
+	Register[num1] = Register[num2] + Register[num3];
+	return OK;
+}
+Result Lmachine::Sub_Instruction(Command * command)
+{
+	int num1 = command->data1;
+	int num2 = command->data2;
+	int num3 = command->data3;
+	Register[num1] = Register[num2] - Register[num3];
+	return OK;
+}
+Result Lmachine::Mul_Instruction(Command * command)
+{
+	int num1 = command->data1;
+	int num2 = command->data2;
+	int num3 = command->data3;
+	Register[num1] = Register[num2] * Register[num3];
+	return OK;
+}
+Result Lmachine::Div_Instruction(Command * command)
+{
+	int num1 = command->data1;
+	int num2 = command->data2;
+	int num3 = command->data3;
+	if (Register[num3] == 0)
+		return ZERO_ERROR;
+	Register[num1] = Register[2] / Register[3];
+	return OK;
+}
+

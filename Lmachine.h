@@ -9,16 +9,17 @@ using namespace std;
 #define Operand_SIZE 1024 //只读指令存储器大小 
 #define Data_SIZE 1024 //数据区大小
 #define RegisterNum 8   //寄存器数目
-#define PC_Register 7   //程序计数器的下标
+#define PC_Regist 7   //程序计数器的下标
 
 boost::regex Regex("(\s)|([0-9]+)|([A-Z_a-z]*[A-Z_a-z0-9]+)|(;)"); //正则表达式
 boost::smatch what;
+//格式 Op data1,data2,data3
 enum Operand
 {
 	//RR
 	OpHLT,//CPU暂停指令 格式：HLT
-	OpIN,//从端口读取数据
-	OpOUT,//向端口写数据
+	OpIN,//将一个数写入Register[data1];
+	OpOUT,//将Register[data1]的数输出
 	OpADD,
 	OpSUB,
 	OpMUL,
@@ -52,7 +53,8 @@ enum Result
 	HALT,	//停止执行
 	IMEM_ERROR,	//IMEM错误
 	DMEM_ERROR,	//DMEM错误
-	ZERO_ERROR，//零除错误
+	ZERO_ERROR,//零除错误
+	NONECOMMAND_ERROR,//指令错误
 };
 struct Command
 {
@@ -124,14 +126,31 @@ public:
 	/*
 	成员函数
 	*/
-	int PC;//程序指令计数
 	void Init();//初始化
-	void ReadLine();//将FILE类型Code名字读取到LmachineToken中
 	void Load();//加载汇编代码到只读指令存储区
+	void Run();//运行虚拟机
+	void ReadLine();//将FILE类型Code名字读取到LmachineToken中
 	string Error(string error);//输出错误信息
 	Operand Token2Op(Token token);//将Token转换为枚举类型的Operand
 	int Token2Int(Token token);
 	int OpClass(int c);//根据c的值在Operand枚举查找指令的类型
+	Result OpRun(Command * command);//命令执行
+	Result In_Instruction(Command * command);
+	Result Out_Instruction(Command * command);
+	Result Add_Instruction(Command * command);
+	Result Sub_Instruction(Command * command);
+	Result Mul_Instruction(Command * command);
+	Result Div_Instruction(Command * command);
+	Result Load_Instruction(Command * command);
+	Result Store_Instruction(Command * command);
+	Result Lad_Instruction(Command * command);
+	Result Ldc_Instruction(Command * command);
+	Result Jlt_Instruction(Command * command);
+	Result Jle_Instruction(Command * command);
+	Result Jgt_Instruction(Command * command);
+	Result Jge_Instruction(Command * command);
+	Result Jeq_Instruction(Command * command);
+	Result Jne_Instruction(Command * command);
 };
 
 #endif
