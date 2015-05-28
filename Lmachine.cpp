@@ -195,4 +195,106 @@ Result Lmachine::Div_Instruction(Command * command)
 	Register[num1] = Register[2] / Register[3];
 	return OK;
 }
-
+Result Lmachine::Load_Instruction(Command * command)
+{
+	int num1 = command->data1;
+	int num2 = command->data2;
+	int num3 = command->data3;
+	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
+		return DataMEM_ERROR;
+	Register[num1] = Data[Register[num2] + num3];
+	return OK;
+}
+Result Lmachine::Store_Instruction(Command * command)
+{
+	int num1 = command->data1;
+	int num2 = command->data2;
+	int num3 = command->data3;
+	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
+		return DataMEM_ERROR;
+	Data[Register[num2] + num3] = Register[num1];
+	return OK;
+}
+Result Lmachine::Lda_Instruction(Command * command)
+{
+	int num1 = command->data1;
+	int num2 = command->data2;
+	int num3 = command->data3;
+	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
+		return DataMEM_ERROR;
+	Register[num1] = Register[num2] + num3;
+	return OK;
+}
+Result Lmachine::Ldc_Instruction(Command * command)
+{
+	int num1 = command->data1;
+	int num3 = command->data3;
+	Register[num1] = num3;
+	return OK;
+}
+Result Lmachine::Jl_Instruction(Command * command) //<
+{
+	int num1 = command->data1;
+	int num2 = command->data2;
+	int num3 = command->data3;
+	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
+		return OperandMEM_ERROR;
+	if (Register[num1] < 0)
+		Register[PC_Regist] = Register[num2] + num3;
+	return OK;
+}
+Result Lmachine::Jle_Instruction(Command * command)//<=
+{
+	int num1 = command->data1;
+	int num2 = command->data2;
+	int num3 = command->data3;
+	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
+		return OperandMEM_ERROR;
+	if (Register[num1] <=0)
+		Register[PC_Regist] = Register[num2] + num3;
+	return OK;
+}
+Result Lmachine::Jnle_Instruction(Command * command)//>
+{
+	int num1 = command->data1;
+	int num2 = command->data2;
+	int num3 = command->data3;
+	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
+		return OperandMEM_ERROR;
+	if (Register[num1]> 0)
+		Register[PC_Regist] = Register[num2] + num3;
+	return OK;
+}
+Result Lmachine::Jle_Instruction(Command * command)
+{
+	int num1 = command->data1;
+	int num2 = command->data2;
+	int num3 = command->data3;
+	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
+		return OperandMEM_ERROR;
+	if (Register[num1]>= 0)
+		Register[PC_Regist] = Register[num2] + num3;
+	return OK;
+}
+Result Lmachine::Je_Instruction(Command * command)//==
+{
+	int num1 = command->data1;
+	int num2 = command->data2;
+	int num3 = command->data3;
+	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
+		return OperandMEM_ERROR;
+	if (Register[num1] == 0)
+		Register[PC_Regist] = Register[num2] + num3;
+	return OK;
+}
+Result Lmachine::Jne_Instruction(Command * command)//!=
+{
+	int num1 = command->data1;
+	int num2 = command->data2;
+	int num3 = command->data3;
+	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
+		return OperandMEM_ERROR;
+	if (Register[num1] != 0)
+		Register[PC_Regist] = Register[num2] + num3;
+	return OK;
+}

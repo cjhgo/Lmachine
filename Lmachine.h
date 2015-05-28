@@ -26,18 +26,18 @@ enum Operand
 	OpDIV,
 	OpRRMODE,//¼Ä´æÆ÷Ñ°Ö··½Ê½ÏÞÖÆ
 	//RM 
-	OpLOAD,//¶ÁÈ¡
-	OpSTORE,//´æ´¢
-	OpRMMODE,//ÄÚ´æÖÐÑ°Ö·
+	OpLOAD,//Load dmem[regs[s]+t] into regs[r]
+	OpSTORE,//Store regs[r] at dmem[regs[s]+t]
+	OpRMMODE,
 	//RA
-	OpLDA,
-	OpLDC,
-	OpJLT,
-	OpJLE,
-	OpJGT,
-	OpJGE,
-	OpJEQ,
-	OpJNE,
+	OpLDA,/* load regs[s]+t into regs[r] */
+	OpLDC,/* load t into regs[r] */
+	OpJL,//<
+	OpJLE,//<=
+	OpJNLE,//>
+	OpJNL,//>=
+	OpJE,//==
+	OpJNE,//!=
 	OpRAMODE,
 
 };
@@ -51,8 +51,8 @@ enum Result
 {
 	OK,		//ÕýÈ·Ö´ÐÐ
 	HALT,	//Í£Ö¹Ö´ÐÐ
-	IMEM_ERROR,	//IMEM´íÎó
-	DMEM_ERROR,	//DMEM´íÎó
+	OperandMEM_ERROR,	//IMEM´íÎó
+	DataMEM_ERROR,	//DMEM´íÎó
 	ZERO_ERROR,//Áã³ý´íÎó
 	NONECOMMAND_ERROR,//Ö¸Áî´íÎó
 };
@@ -81,11 +81,11 @@ string OpCodeTable[] =
 	//RA
 	"LDA",
 	"LDC",
-	"JLT",
+	"JL",
 	"JLE",
-	"JGT",
-	"JGE",
-	"JEQ",
+	"JNLE",
+	"JNL",
+	"JE",
 	"JNE",
 	"????",
 };
@@ -143,13 +143,13 @@ public:
 	Result Div_Instruction(Command * command);
 	Result Load_Instruction(Command * command);
 	Result Store_Instruction(Command * command);
-	Result Lad_Instruction(Command * command);
+	Result Lda_Instruction(Command * command);
 	Result Ldc_Instruction(Command * command);
-	Result Jlt_Instruction(Command * command);
+	Result Jl_Instruction(Command * command);
 	Result Jle_Instruction(Command * command);
-	Result Jgt_Instruction(Command * command);
-	Result Jge_Instruction(Command * command);
-	Result Jeq_Instruction(Command * command);
+	Result Jnle_Instruction(Command * command);
+	Result Jnl_Instruction(Command * command);
+	Result Je_Instruction(Command * command);
 	Result Jne_Instruction(Command * command);
 };
 
