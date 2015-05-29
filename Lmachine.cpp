@@ -3,13 +3,20 @@
 #include <fstream>
 #include "Lmachine.h"
 using namespace std;
+/*
+	Assembler实现
+*/
+Assembler::Assembler(fstream *code, Lmachine *lmachine)
+{
+	
+}
 //初始化
 void Lmachine::Init()
 {
 	/*
 		打开的指定的汇编代码文件
 	*/
-	Code.open("code.txt");
+	*Code.open("code.txt");
 	/*
 		初始化
 	*/
@@ -18,7 +25,7 @@ void Lmachine::Init()
 		Data[i] = 0;
 	for (int i = 0; i < Operand_SIZE; i++)//初始化只读指令存储区
 	{
-		OperandMem[i].op = OpHLT;
+		OperandMem[i].op = OpHALT;
 		OperandMem[i].data1 = 0;
 		OperandMem[i].data2 = 0;
 		OperandMem[i].data3 = 0;
@@ -112,14 +119,14 @@ void Lmachine::Run()
 {
 	Command * command = NULL;
 	Result result; //运行结果
-	command = &OperandMem[Register[PC_Regist]];
-	while (command->op != OpHLT)
+	command = &OperandMem[Register[PC_Register]];
+	while (command->op != OpHALT)
 	{
 		if ((result = OpRun(command)) != OK)
 			Error(ResultTable[result]);
 		if (command->op < OpJLT)
-			Register[PC_Regist]++;
-		command = &OperandMem[Register[PC_Regist]];
+			Register[PC_Register]++;
+		command = &OperandMem[Register[PC_Register]];
 
 	}
 }
@@ -240,7 +247,7 @@ Result Lmachine::Jl_Instruction(Command * command) //<
 	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
 		return OperandMEM_ERROR;
 	if (Register[num1] < 0)
-		Register[PC_Regist] = Register[num2] + num3;
+		Register[PC_Register] = Register[num2] + num3;
 	return OK;
 }
 Result Lmachine::Jle_Instruction(Command * command)//<=
@@ -251,7 +258,7 @@ Result Lmachine::Jle_Instruction(Command * command)//<=
 	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
 		return OperandMEM_ERROR;
 	if (Register[num1] <=0)
-		Register[PC_Regist] = Register[num2] + num3;
+		Register[PC_Register] = Register[num2] + num3;
 	return OK;
 }
 Result Lmachine::Jnle_Instruction(Command * command)//>
@@ -262,7 +269,7 @@ Result Lmachine::Jnle_Instruction(Command * command)//>
 	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
 		return OperandMEM_ERROR;
 	if (Register[num1]> 0)
-		Register[PC_Regist] = Register[num2] + num3;
+		Register[PC_Register] = Register[num2] + num3;
 	return OK;
 }
 Result Lmachine::Jle_Instruction(Command * command)
@@ -273,7 +280,7 @@ Result Lmachine::Jle_Instruction(Command * command)
 	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
 		return OperandMEM_ERROR;
 	if (Register[num1]>= 0)
-		Register[PC_Regist] = Register[num2] + num3;
+		Register[PC_Register] = Register[num2] + num3;
 	return OK;
 }
 Result Lmachine::Je_Instruction(Command * command)//==
@@ -284,7 +291,7 @@ Result Lmachine::Je_Instruction(Command * command)//==
 	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
 		return OperandMEM_ERROR;
 	if (Register[num1] == 0)
-		Register[PC_Regist] = Register[num2] + num3;
+		Register[PC_Register] = Register[num2] + num3;
 	return OK;
 }
 Result Lmachine::Jne_Instruction(Command * command)//!=
@@ -295,6 +302,14 @@ Result Lmachine::Jne_Instruction(Command * command)//!=
 	if (Register[num2] + num3 < 0 || Register[num2] + num3 >= Data_SIZE)
 		return OperandMEM_ERROR;
 	if (Register[num1] != 0)
-		Register[PC_Regist] = Register[num2] + num3;
+		Register[PC_Register] = Register[num2] + num3;
 	return OK;
+}
+//主函数
+int main()
+{
+	Lmachine *Lvm=new Lmachine;
+	Assembler Asm(Lvm->Code, Lvm);
+
+
 }

@@ -9,7 +9,7 @@ using namespace std;
 #define Operand_SIZE 1024 //只读指令存储器大小 
 #define Data_SIZE 1024 //数据区大小
 #define RegisterNum 8   //寄存器数目
-#define PC_Regist 7   //程序计数器的下标
+#define PC_Register 7   //程序计数器的下标
 
 boost::regex Regex("(\s)|([0-9]+)|([A-Z_a-z]*[A-Z_a-z0-9]+)|(;)"); //正则表达式
 boost::smatch what;
@@ -17,28 +17,28 @@ boost::smatch what;
 enum Operand
 {
 	//RR
-	OpHLT,//CPU暂停指令 格式：HLT
-	OpIN,//将一个数写入Register[data1];
-	OpOUT,//将Register[data1]的数输出
+	OpHALT,	//CPU暂停指令 格式：HALT
+	OpIN,	//将一个数写入Register[data1] 
+	OpOUT,	//将Register[data1]的数输出
 	OpADD,
 	OpSUB,
 	OpMUL,
 	OpDIV,
-	OpRRMODE,//寄存器寻址方式限制
+	OpRRMODE,//RR类型指令限制
 	//RM 
-	OpLOAD,//Load dmem[regs[s]+t] into regs[r]
-	OpSTORE,//Store regs[r] at dmem[regs[s]+t]
-	OpRMMODE,
+	OpLOAD,	//将内存中Data[Register[num2]+num3] 存到Register[num1]
+	OpSTORE,//将Register[num1]存到Data[Register[num2]+num3]
+	OpRMMODE,//RM类型指令限制
 	//RA
-	OpLDA,/* load regs[s]+t into regs[r] */
-	OpLDC,/* load t into regs[r] */
-	OpJL,//<
-	OpJLE,//<=
-	OpJNLE,//>
-	OpJNL,//>=
-	OpJE,//==
-	OpJNE,//!=
-	OpRAMODE,
+	OpLDA,	//load regs[s]+t into regs[r]
+	OpLDC,	// load t into regs[r]
+	OpJL,	//<
+	OpJLE,	//<=
+	OpJNLE,	//>
+	OpJNL,	//>=
+	OpJE,	//==
+	OpJNE,	//!=
+	OpRAMODE,//RA类型指令限制
 
 };
 enum OpCode //三种不同类型的opcode
@@ -110,6 +110,16 @@ public:
 	string GetID();
 	string GetNumber();
 };
+//汇编器
+class Assembler
+{
+public:
+	Assembler();
+	Assembler(fstream *code,Lmachine *lmachine);
+	~Assembler();
+	void Run_Assembler();	//运行汇编器
+	void SymbolTable();		//构建符号表
+};
 class Lmachine
 {
 public:
@@ -120,7 +130,7 @@ public:
 	int Data[Data_SIZE];//数据存储区
 	int Register[RegisterNum];//寄存器
 	queue<Token> LmachineToken; //汇编代码字符流
-	fstream Code;//要加载的汇编文件
+	fstream *Code;//要加载的汇编文件
 	int IADDR_Pointer;//指向只读指令存储区的指针
 	int DADDR_Pointer;//指向数据存储区的指针
 	/*
