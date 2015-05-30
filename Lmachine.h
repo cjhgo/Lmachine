@@ -1,9 +1,10 @@
 #pragma once
 #ifndef _LMACHINE_H
 #define _LMACHINE_H
+#include "Global.h"
 #include <iostream>
 #include <string>
-#include <queue>
+#include <vector>
 #include <fstream>
 using namespace std;
 #define Operand_SIZE 1024 //只读指令存储器大小 
@@ -97,6 +98,19 @@ string ResultTable[] =
 	"DATA MEMORY FAULT",
 	"DIVISION BY 0"
 };
+//同名引用结点
+struct SymbolReferenceNode
+{
+	Bytes ReferenceAddr;	   //同名引用的符号的内存地址
+	SymbolReferenceNode * Next;//下一个同名引用的结点
+};
+//符号表定义
+struct SymbolTable
+{
+	string SymbolName;	//符号地址名
+	Bytes SymbolAddr;	//符号内存地址
+	SymbolReferenceNode * First;//该符号首次出现
+};
 class Token
 {
 public:
@@ -114,12 +128,21 @@ public:
 class Assembler
 {
 public:
+	/*
+		数据成员
+	*/
+	vector<Token> LmachineToken; //汇编代码字符流
+	/*
+		成员函数
+	*/
 	Assembler();
-	Assembler(fstream *code,Lmachine *lmachine);
+	Assembler(vector<Token> *token,Lmachine *lmachine);
 	~Assembler();
 	void Run_Assembler();	//运行汇编器
-	void SymbolTable();		//构建符号表
+	void BuildSymbolTable();//构建符号表
+	TokenType Lexer(Token token);//确定Token的属性
 };
+//虚拟机
 class Lmachine
 {
 public:
@@ -127,9 +150,9 @@ public:
 	数据成员
 	*/
 	Command OperandMem[Operand_SIZE];//只读指令存储区
-	int Data[Data_SIZE];//数据存储区
+	Bytes Data[Data_SIZE];//数据存储区
 	int Register[RegisterNum];//寄存器
-	queue<Token> LmachineToken; //汇编代码字符流
+	vector<Token> LmachineToken; //汇编代码字符流
 	fstream *Code;//要加载的汇编文件
 	int IADDR_Pointer;//指向只读指令存储区的指针
 	int DADDR_Pointer;//指向数据存储区的指针

@@ -6,17 +6,41 @@ using namespace std;
 /*
 	Assembler实现
 */
-Assembler::Assembler(fstream *code, Lmachine *lmachine)
+Assembler::Assembler(vector<Token> *token, Lmachine *lmachine)
 {
 	
 }
+//构造符号表
+void Assembler::BuildSymbolTable()
+{
+
+	TokenType type;
+	for (int i = 0; i < LmachineToken.size();i++)
+	{
+		type = Lexer(LmachineToken[i]);
+		switch (type)
+		{
+		case Lablel:	//新定义标号，加入符号表
+		case ReferLabel://标号地址的引用，即已存在，更新
+		case UnKnown:	//不可识别的符号
+		default:
+			break;
+		}
+		{
+
+		}
+	}
+}
+/*
+	虚拟机
+*/
 //初始化
 void Lmachine::Init()
 {
 	/*
 		打开的指定的汇编代码文件
 	*/
-	*Code.open("code.txt");
+	Code->open("code.txt");
 	/*
 		初始化
 	*/
@@ -37,7 +61,7 @@ void Lmachine::Init()
 void Lmachine::ReadLine()
 {
 	string Line;
-	while (getline(Code, Line)) //每行读取汇编代码
+	while (getline(*Code, Line)) //每行读取汇编代码
 	{
 		if (boost::regex_search(Line, what, Regex))
 		{
@@ -48,7 +72,7 @@ void Lmachine::ReadLine()
 					string tokentext(what[2].first, what[2].second);
 					int tokennumber = atoi(tokentext.c_str());
 					Token token(tokennumber);
-					LmachineToken.push(token);
+					LmachineToken.push_back(token);
 					if ((Line.length() - tokentext.length() - 1) == 0)
 						break;
 					Line = Line.substr((Line.length() - tokentext.length() - 1));
@@ -57,7 +81,7 @@ void Lmachine::ReadLine()
 				{
 					string tokentext(what[3].first, what[3].second);
 					Token token(tokentext);
-					LmachineToken.push(token);
+					LmachineToken.push_back(token);
 					if ((Line.length() - tokentext.length() - 1) == 0)
 						break;
 					Line = Line.substr((Line.length() - tokentext.length() - 1));
@@ -309,7 +333,8 @@ Result Lmachine::Jne_Instruction(Command * command)//!=
 int main()
 {
 	Lmachine *Lvm=new Lmachine;
-	Assembler Asm(Lvm->Code, Lvm);
+	Lvm->Init();
+	Assembler Asm(&Lvm->LmachineToken, Lvm);
 
 
 }
