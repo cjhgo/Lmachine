@@ -4,11 +4,20 @@
 #include "Lmachine.h"
 using namespace std;
 /*
-	Assembler实现
+	Assembler汇编器实现
 */
 Assembler::Assembler(vector<Token> *token, Lmachine *lmachine)
 {
 	
+}
+//在符号表中查找符号
+bool Assembler::SearchSymbol(string symbolname)
+{
+	for (int i = 0; i < SymbolTable.size(); i++)
+	{
+		if (symbolname == SymbolTable[i].SymbolName) //在符号表中找到该符号
+			break;
+	}
 }
 //构造符号表
 void Assembler::BuildSymbolTable()

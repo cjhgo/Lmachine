@@ -104,8 +104,8 @@ struct SymbolReferenceNode
 	Bytes ReferenceAddr;	   //同名引用的符号的内存地址
 	SymbolReferenceNode * Next;//下一个同名引用的结点
 };
-//符号表定义
-struct SymbolTable
+//符号定义
+struct Symbol
 {
 	string SymbolName;	//符号地址名
 	Bytes SymbolAddr;	//符号内存地址
@@ -132,6 +132,7 @@ public:
 		数据成员
 	*/
 	vector<Token> LmachineToken; //汇编代码字符流
+	vector<Symbol> SymbolTable;//符号表动态数组
 	/*
 		成员函数
 	*/
@@ -140,6 +141,7 @@ public:
 	~Assembler();
 	void Run_Assembler();	//运行汇编器
 	void BuildSymbolTable();//构建符号表
+	bool SearchSymbol(string symbolname);//在符号表中查找符号
 	TokenType Lexer(Token token);//确定Token的属性
 };
 //虚拟机
