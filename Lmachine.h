@@ -28,7 +28,8 @@ public:
 		return  OpMemonic[i];
 	}
 	void LmachineRun();//执行程序
-	void Increment(Bytes data);//执行加1操作
+	void Increment(Bytes &data);//执行加1操作
+	void Decrement(Bytes &data);//执行减1操作
 
 };
 

@@ -32,7 +32,7 @@ struct CPU
 	Bytes InstructionRegister;//指令寄存器
 	Bytes ProgramCounter;//程序计数器
 	Bytes BasePointer;//基址指针
-	bool Psw1, Psw2, Psw3;//标志寄存器
+	bool Carry;//进位标志器
 };
 //虚拟机的运行状态
 enum Status
@@ -69,30 +69,54 @@ enum TokenType
 //虚拟机机器指令表
 enum Operand
 {
+	//B 代表立即数，前面加V 代表立即数本身  不加V代表[B] 即B地址单元中的内容
 	OpHALT,	//CPU暂停指令 格式：HALT
-	OpIN,	//将一个数写入Register[data1] 
-	OpOUT,	//将Register[data1]的数输出
-	OpADD,
-	OpSUB,
-	OpMUL,
-	OpDIV,
-	OpINC,//+1
-	OpDEC,//-1
-	OpPUSH,
-	OpPOP,
-	OpCMP,
-	OpJMP,
-	OpLOAD,	//将内存中Data[Register[num2]+num3] 存到Register[num1]
-	OpSTORE,//将Register[num1]存到Data[Register[num2]+num3]
-	OpLDA,	//load regs[s]+t into regs[r]
-	OpLDC,	// load t into regs[r]
-	OpJL,	//<
-	OpJLE,	//<=
-	OpJNLE,	//>
-	OpJNL,	//>=
-	OpJE,	//==
-	OpJNE,	//!=
-	OpError,//错误指令
+	OpCLEARACC,		//累加器清0
+	OpClEARCARRY,	//进位标志器清0
+	OpCLEARINDEXREG,//变址寄存器清0
+	OpINACCD,	//将10进制数写入累加器
+	OpINACCB,	//将2进制数写入累加器
+	OpINACCA,	//将ascii字符写入累加器
+	OpOUTACCD,	//将累加器数据以10进制形式输出
+	OpOUTACCB,	//将累加器数据以2进制形式输出
+	OpOUTACCA,	//将累加器数据以ascii字符形式输出
+	OpINC,//累加器加1，影响标志器
+	OpDEC,//累加器减1，影响标志器
+	OpINCINDEXREG,//变址寄存器加1，影响标志器
+	OpDECINDEXREG,//变址寄存器减1，影响标志器
+	OpACCTOINDEXREG,//累加器内容送入变址寄存器 x
+	OpPUSH,//压栈，堆栈指针减1，累加器的内容压入栈顶。
+	OpPOP,//出栈，堆栈指针加1，将栈顶内容压入栈内
+	OpLAB,//格式 LDA B ，将B地址单元中的内容送入累加器中，以当前PC所指内存的数值作为地址偏移
+	OpLAIB,//将变址寄存器+立即数B所指的内存单元的内容送入累加器 A=[I+B]
+	OpLAVB,//将立即数B送入累加器
+	OpLSVB,//将立即数B中的内容送到SP寄存器
+	OpSBA,//[B]=A
+	OpSIBA,//[B+I]=A
+	//加法
+	OpADDB,//A=A+[B]
+	OpADDIB,//A=A+[I+B]
+	OpADDVA,//A=A+B
+	OpADCB,//A=A+C+[B]
+	OpADCIB,//A=A+C+[I+B]
+	OpADCVB,//A=A+C+B
+	//减法
+	OpSUBB,//A=A+[B]
+	OpSUBIB,//A=A+[I+B]
+	OpSUBVA,//A=A+B
+	OpSBCB,//A=A+C+[B]
+	OpSBCXB,//A=A+C+[I+B]
+	OpSBCVB,//A=A+C+B
+	//比较
+	OpCMPB,//A与[B]内容进行比较，影响标志位
+	OpCMPIB,//A与[B+I]内容进行比较，影响标志位
+	OpCMPVP,//A与B比较，影响标志位
+	//与
+	OpANDB,//A与[B]的内容位与，影响标志位
+	OpANDVB,//A与B位与，影响标志位
+	OpANDIB,//A与[I+B]位与，影响标志位
+	//或
+
 
 };
 //指令助记符
