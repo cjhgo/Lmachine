@@ -10,6 +10,38 @@ boost::smatch what;
 typedef unsigned char Bytes; //一个字节
 #define MemSize 256 //虚拟机内存
 
+//同名引用结点
+struct SymbolReferenceNode
+{
+	Bytes ReferenceAddr;	   //同名引用的符号的内存地址
+	SymbolReferenceNode * Next;//下一个同名引用的结点
+};
+//符号定义
+struct Symbol
+{
+	string SymbolName;	//符号地址名
+	Bytes SymbolAddr;	//符号内存地址
+	SymbolReferenceNode * First;//该符号首次出现
+};
+//CPU设计
+struct CPU
+{
+	Bytes Accumulator;//累加器
+	Bytes StackPointer;//堆栈指针SP
+	Bytes IndexRegister;//变址寄存器
+	Bytes InstructionRegister;//指令寄存器
+	Bytes ProgramCounter;//程序计数器
+	Bytes BasePointer;//基址指针
+	bool Psw1, Psw2, Psw3;//标志寄存器
+};
+//虚拟机的运行状态
+enum Status
+{
+	Running,
+	Finished,
+	ErrorOp,
+	ErrorData,
+};
 //代码字符流
 class Token
 {

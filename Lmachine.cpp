@@ -18,7 +18,24 @@ void Lmachine::Init()
 	*/
 
 }
+void Lmachine::LmachineRun()
+{
+	Bytes Carry;//程序进位位的状态
+	cpu.Psw1 = false;
+	cpu.Psw2 = false;
+	cpu.Psw3 = false;
+	cpu.Accumulator = 0;
+	cpu.IndexRegister = 0;
+	cpu.BasePointer = 0;
+	cpu.StackPointer = 0;
+	cpu.ProgramCounter = 0;
+	CPUStatus = Running;
+	do
+	{
+		cpu.InstructionRegister = Memory[cpu.ProgramCounter];
 
+	}
+}
 //主函数
 int main()
 {
