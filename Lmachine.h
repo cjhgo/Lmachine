@@ -15,8 +15,8 @@ public:
 	/*
 		数据成员
 	*/
-	CPU cpu;//虚拟机的CPU
-	Status CPUStatus;//虚拟机CPU的运行状态
+	CPU Lcpu;//虚拟机的CPU
+	Status LcpuStatus;//虚拟机CPU的运行状态
 	Bytes Memory[MemSize];//虚拟机内存空间
 
 	/*
@@ -30,6 +30,7 @@ public:
 	void LmachineRun();//执行程序
 	void Increment(Bytes &data);//执行加1操作
 	void Decrement(Bytes &data);//执行减1操作
+	void SetFlags(Bytes Register);//根据寄存器的值设定标志器
 
 };
 
