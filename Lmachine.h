@@ -31,6 +31,7 @@ public:
 	void Increment(Bytes &data);//执行加1操作
 	void Decrement(Bytes &data);//执行减1操作
 	void SetFlags(Bytes Register);//根据寄存器的值设定标志器
+	void PrintRunError();//输出程序运行的错误
 	Bytes Index();//计算变址地址 AX+B
 
 };

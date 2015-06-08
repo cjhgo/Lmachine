@@ -252,16 +252,50 @@ void Lmachine::LmachineRun()
 			break;
 				//跳转
 		case OpJMPB://跳转到B地址
-				OpJZB,//如果Z标志为1，跳转到B单元
-				OpJNZB,//如果Z标志为0，跳转到B单元
-				OpJSB,//如果S标志为1，跳转到B单元
-				OpJNSB,//如果S标志为0，跳转到B单元
-				OpJC,//如果C标志为1，跳转到B单元
-				OpJNC,//如果C标志为0，跳转到B单元
-default:
+			Lcpu.ProgramCounter = Memory[Lcpu.ProgramCounter];
+			break;
+		case OpJZB://如果Z标志为1，跳转到B单元
+			if (Lcpu.Zero==1)
+				Lcpu.ProgramCounter = Memory[Lcpu.ProgramCounter];
+			else
+				Increment(Lcpu.ProgramCounter);
+			break;
+		case OpJNZB://如果Z标志为0，跳转到B单元
+			if (Lcpu.Zero == 0)
+				Lcpu.ProgramCounter = Memory[Lcpu.ProgramCounter];
+			else
+				Increment(Lcpu.ProgramCounter);
+			break;
+		case OpJSB://如果S标志为1，跳转到B单元
+			if (Lcpu.Sign == 1)
+				Lcpu.ProgramCounter = Memory[Lcpu.ProgramCounter];
+			else
+				Increment(Lcpu.ProgramCounter);
+			break;
+		case OpJNSB://如果S标志为0，跳转到B单元
+			if (Lcpu.Sign ==0)
+				Lcpu.ProgramCounter = Memory[Lcpu.ProgramCounter];
+			else
+				Increment(Lcpu.ProgramCounter);
+			break;
+		case OpJC://如果C标志为1，跳转到B单元
+			if (Lcpu.Carry == 1)
+				Lcpu.ProgramCounter = Memory[Lcpu.ProgramCounter];
+			else
+				Increment(Lcpu.ProgramCounter);
+			break;
+		case OpJNC://如果C标志为0，跳转到B单元
+			if (Lcpu.Carry == 1)
+				Lcpu.ProgramCounter = Memory[Lcpu.ProgramCounter];
+			else
+				Increment(Lcpu.ProgramCounter);
+			break;
+	default:
 			break;
 		}
-	}
+	}while (LcpuStatus == Running);
+	if (LcpuStatus==Finished)
+
 }
 //主函数
 int main()
