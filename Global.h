@@ -114,7 +114,7 @@ enum Operand
 	//比较
 	OpCMPB,//A与[B]内容进行比较，影响标志位
 	OpCMPIB,//A与[B+I]内容进行比较，影响标志位
-	OpCMPVP,//A与B比较，影响标志位
+	OpCMPVB,//A与B比较，影响标志位
 	//与
 	OpANDB,//A与[B]的内容位与，影响标志位
 	OpANDVB,//A与B位与，影响标志位

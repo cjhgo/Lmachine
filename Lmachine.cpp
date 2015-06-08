@@ -99,46 +99,166 @@ void Lmachine::LmachineRun()
 			Increment(Lcpu.ProgramCounter);
 			SetFlags(Lcpu.Accumulator);
 			break;
-				OpLOADIBAX,//将变址寄存器+立即数B所指的内存单元的内容送入累加器 A=[I+B]
-				OpLOADVBAX,//将立即数B送入累加器
-				OpLOADVBSP,//将立即数B中的内容送到SP寄存器
-				OpSTOREAXB,//[B]=A
-				OpSIOREAXBI,//[B+I]=A
+		case OpLOADIBAX://将变址寄存器+立即数B所指的内存单元的内容送入累加器 A=[I+B]
+			Lcpu.Accumulator = Memory[Index()];
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpLOADVBAX://将立即数B送入累加器
+			Lcpu.Accumulator = Memory[Lcpu.ProgramCounter];
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpLOADVBSP://将立即数B中的内容送到SP寄存器
+			Lcpu.StackPointer = Memory[Memory[Lcpu.ProgramCounter]];
+			Increment(Lcpu.ProgramCounter);
+			break;
+		case OpSTOREAXB://[B]=A
+			Memory[Memory[Lcpu.ProgramCounter]] = Lcpu.Accumulator;
+			Increment(Lcpu.ProgramCounter);
+			break;
+		case OpSIOREAXBI://[B+I]=A
+			Memory[Index()] = Lcpu.Accumulator;
+			Increment(Lcpu.Accumulator);
+			break;
 				//加法
-				OpADDB,//A=A+[B]
-				OpADDIB,//A=A+[I+B]
-				OpADDVB,//A=A+B
-				OpADCB,//A=A+C+[B]
-				OpADCIB,//A=A+C+[I+B]
-				OpADCVB,//A=A+C+B
+		case OpADDB://A=A+[B]
+			Lcpu.Carry = (Lcpu.Accumulator + Memory[Lcpu.ProgramCounter] > 255); //是否进位
+			Lcpu.Accumulator = (Lcpu.Accumulator + Memory[Memory[Lcpu.ProgramCounter]]) % 256;//限定数值的大小
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpADDIB://A=A+[I+B]
+			Lcpu.Carry = (Lcpu.Accumulator + Memory[Index()] > 255); //是否进位
+			Lcpu.Accumulator = (Lcpu.Accumulator + Memory[Index()]) % 256;
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpADDVB://A=A+B
+			Lcpu.Carry = (Lcpu.Accumulator + Memory[Lcpu.ProgramCounter]) > 255;
+			Lcpu.Accumulator = (Lcpu.Accumulator + Memory[Lcpu.ProgramCounter]) % 256;
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpADCB://A=A+C+[B] 带进位位
+			Carry = Lcpu.Carry;
+			Lcpu.Carry = (Lcpu.Accumulator + Memory[Memory[Lcpu.ProgramCounter]] + Carry) > 255;
+			Lcpu.Accumulator = (Lcpu.Accumulator + Memory[Memory[Lcpu.ProgramCounter]] + Carry) % 256;
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpADCIB://A=A+C+[I+B]
+			Carry = Lcpu.Carry;
+			Lcpu.Carry = (Lcpu.Accumulator + Memory[Index()] + Carry) > 255;
+			Lcpu.Accumulator = (Lcpu.Accumulator + Memory[Index()] + Carry) % 256;
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpADCVB://A=A+C+B
+			Carry = Lcpu.Carry;
+			Lcpu.Carry = (Lcpu.Accumulator + Memory[Lcpu.ProgramCounter] + Carry) > 255;
+			Lcpu.Accumulator = (Lcpu.Accumulator + Memory[Lcpu.ProgramCounter] + Carry) % 256;
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
 				//减法
-				OpSUBB,//A=A-[B]
-				OpSUBIB,//A=A-[I+B]
-				OpSUBVB,//A=A-B
-				OpSBCB,//A=A-C-[B]
-				OpSBCIB,//A=A-C-[I+B]
-				OpSBCVB,//A=A-C-B
+		case OpSUBB://A=A-[B]
+			Lcpu.Carry = (Lcpu.Accumulator < Memory[Memory[Lcpu.ProgramCounter]]);
+			Lcpu.Accumulator = (Lcpu.Accumulator - Memory[Memory[Lcpu.ProgramCounter]] + 256) % 256;
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpSUBIB://A=A-[I+B]
+			Lcpu.Carry = (Lcpu.Accumulator < Memory[Index()]);
+			Lcpu.Accumulator = (Lcpu.Accumulator - Memory[Index()] + 256) % 256;
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpSUBVB://A=A-B
+			Lcpu.Carry = (Lcpu.Accumulator < Memory[Lcpu.ProgramCounter]);
+			Lcpu.Accumulator = (Lcpu.Accumulator - Memory[Lcpu.ProgramCounter] + 256) % 256;
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpSBCB://A=A-C-[B]
+			Carry = Lcpu.Carry;
+			Lcpu.Carry = (Lcpu.Accumulator < Memory[Memory[Lcpu.ProgramCounter]] + Carry);
+			Lcpu.Accumulator = (Lcpu.Accumulator - Carry - Memory[Memory[Lcpu.ProgramCounter]] + 256) % 256;
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpSBCIB://A=A-C-[I+B]
+			Carry = Lcpu.Carry;
+			Lcpu.Carry = (Lcpu.Accumulator < Memory[Index()] + Carry);
+			Lcpu.Accumulator = (Lcpu.Accumulator - Carry - Memory[Index()] + 256) % 256;
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpSBCVB://A=A-C-B
+			Carry = Lcpu.Carry;
+			Lcpu.Carry = (Lcpu.Accumulator < Memory[Lcpu.ProgramCounter] + Carry);
+			Lcpu.Accumulator = (Lcpu.Accumulator - Carry - Memory[Lcpu.ProgramCounter] + 256) % 256;
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
 				//比较
-				OpCMPB,//A与[B]内容进行比较，影响标志位
-				OpCMPIB,//A与[B+I]内容进行比较，影响标志位
-				OpCMPVP,//A与B比较，影响标志位
+		case OpCMPB://A与[B]内容进行比较，影响标志位
+			Lcpu.Carry = (Lcpu.Accumulator < Memory[Memory[Lcpu.ProgramCounter]]);
+			SetFlags((Lcpu.Accumulator - Memory[Memory[Lcpu.ProgramCounter]] + 256) % 256);
+			Increment(Lcpu.ProgramCounter);
+			break;
+		case OpCMPIB://A与[B+I]内容进行比较，影响标志位
+			Lcpu.Carry = (Lcpu.Accumulator < Memory[Index()]);
+			SetFlags((Lcpu.Accumulator - Memory[Index()] + 256) % 256);
+			break;
+		case OpCMPVB://A与B比较，影响标志位
+			Lcpu.Carry = (Lcpu.Accumulator < Memory[Lcpu.ProgramCounter]);
+			SetFlags((Lcpu.Accumulator - Memory[Lcpu.ProgramCounter] + 256) % 256);
+			break;
 				//与
-				OpANDB,//A与[B]的内容位与，影响标志位
-				OpANDVB,//A与B位与，影响标志位
-				OpANDIB,//A与[I+B]位与，影响标志位
+		case OpANDB://A与[B]的内容位与，影响标志位
+			Lcpu.Accumulator = Lcpu.Accumulator & Memory[Memory[Lcpu.ProgramCounter]];
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			Lcpu.Carry = false;
+			break;
+		case OpANDVB://A与B位与，影响标志位
+			Lcpu.Accumulator = Lcpu.Accumulator & Memory[Lcpu.ProgramCounter];
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			Lcpu.Carry = false;
+			break;
+		case OpANDIB://A与[I+B]位与，影响标志位
+			Lcpu.Accumulator = Lcpu.Accumulator & Memory[Index()];
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			Lcpu.Carry = false;
+			break;
 				//或
-				OpORB,//A与[B]的内容位或，影响标志位
-				OpORVB,//A与B位或，影响标志位
-				OpORIB,//A与[I+B]位或，影响标志位
+		case OpORB://A与[B]的内容位或，影响标志位
+			Lcpu.Accumulator = Lcpu.Accumulator | Memory[Memory[Lcpu.ProgramCounter]];
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpORVB://A与B位或，影响标志位
+			Lcpu.Accumulator = Lcpu.Accumulator | Memory[Lcpu.ProgramCounter];
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
+		case OpORIB://A与[I+B]位或，影响标志位
+			Lcpu.Accumulator = Lcpu.Accumulator | Memory[Index()];
+			Increment(Lcpu.ProgramCounter);
+			SetFlags(Lcpu.Accumulator);
+			break;
 				//跳转
-				OpJMPB,//跳转到B地址
+		case OpJMPB://跳转到B地址
 				OpJZB,//如果Z标志为1，跳转到B单元
 				OpJNZB,//如果Z标志为0，跳转到B单元
 				OpJSB,//如果S标志为1，跳转到B单元
 				OpJNSB,//如果S标志为0，跳转到B单元
 				OpJC,//如果C标志为1，跳转到B单元
 				OpJNC,//如果C标志为0，跳转到B单元
-		default:
+default:
 			break;
 		}
 	}
