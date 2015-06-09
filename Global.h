@@ -9,7 +9,7 @@ boost::regex Regex("(\s)|([0-9]+)|([A-Z_a-z]*[A-Z_a-z0-9]+)|(;)"); //正则表达式
 boost::smatch what;
 typedef unsigned char Bytes; //一个字节
 #define MemSize 256 //虚拟机内存
-
+#define MaxInstuction 51 //汇编指令数目
 //同名引用结点
 struct SymbolReferenceNode
 {
@@ -131,6 +131,8 @@ enum Operand
 	OpJNSB,//如果S标志为0，跳转到B单元
 	OpJC,//如果C标志为1，跳转到B单元
 	OpJNC,//如果C标志为0，跳转到B单元
+	//错误指令
+	OpError,
 };
 //指令助记符
 string OpMemonic[] =
@@ -192,5 +194,7 @@ string OpMemonic[] =
 	"JNSB",//如果S标志为0，跳转到B单元
 	"JC",//如果C标志为1，跳转到B单元
 	"JNC",//如果C标志为0，跳转到B单元
+	//错误指令
+	"OpError"
 };
 #endif

@@ -21,7 +21,7 @@ public:
 	*/
 	Assembler();
 	~Assembler();
-	void Init();//初始化
+	void Init(string codefilename);//初始化
 	TokenType Lexer(Token token, string &Strtoken, Operand &operand);//汇编代码字符流分析
 	void ReadLine();//将FILE类型Code名字读取到LmachineToken中
 	void Run_Assembler();	//运行汇编器

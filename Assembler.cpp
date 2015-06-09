@@ -5,10 +5,10 @@
 --------------------------------------------------------------
 */
 //汇编器初始化
-void Assembler::Init()
+void Assembler::Init(string codefilename)
 {
 	TokenIndex = 0;//将Token记号初始化为0
-	Code->open("code.txt");//打开的指定的汇编代码文件
+	Code->open(codefilename);//打开的指定的汇编代码文件
 	ReadLine();//将FILE类型Code名字读取到LmachineToken中
 }
 //运行汇编器
@@ -27,7 +27,7 @@ void Assembler::Run_Assembler()
 		switch (type)
 		{
 		case ASMCode://汇编指令
-			Op = lmachine->GetOpcode(Strtoken); //查询汇编指令代表的机器指令
+			Op = lmachine->Opcode(Strtoken); //查询汇编指令代表的机器指令
 			if (Op == OpError)
 			{
 				cout << "error mnemonic " << Strtoken << endl;
@@ -37,7 +37,7 @@ void Assembler::Run_Assembler()
 			break;
 		case ReferLabel://对地址标号的引用
 			Strtoken += ":";
-			labelindex = SearchSymbol(Strtoken, 1);
+			labelindex = SearchSymbol(Strtoken, 1); //在符号表搜寻，且获取标号的下标
 			if (labelindex == -1)//不存在
 			{
 				cout << "Error: no such a lable" << Strtoken << endl;

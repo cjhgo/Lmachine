@@ -12,11 +12,50 @@ using namespace std;
 //初始化
 void Lmachine::Init()
 {
-	
+	string Judge;
 	/*
 		初始化
 	*/
-
+	cout << "--------------------------------------" << endl;
+	cout << "|         welcome to Lmachine        |" << endl;
+	cout << "|                                    |" << endl;
+	cout << "|                                    |" << endl;
+	cout << "|                    By: Leviathan   |" << endl;
+	cout << "--------------------------------------" << endl;
+	cout << "请输入代码文件名          " << endl;
+	cout << "					:    " << endl;
+	cin >>CodeFileName;
+	cout << "请输入输出文件名          " << endl;
+	cout << "					:    " << endl;
+	cin >> OutFileName;
+	cout << "是否执行 y/n ：" << endl;
+	cin >> Judge;
+	while (Judge != "y" || Judge != "Y" || Judge != "n" || Judge != "N")
+	{
+		cout << "请输入正确的指令" << endl;
+		cin >> Judge;
+	}
+	if (Judge == "y" || Judge == "Y")
+		LmachineAPI();//虚拟机主控制程序
+	else if (Judge == "n" || Judge == "N")
+		LmachineQuit();//退出虚拟机
+}
+//虚拟机主控制函数
+void Lmachine::LmachineAPI()
+{
+	Assembler *assembler = new Assembler;
+	assembler->Init(CodeFileName);//汇编器初始化，传递代码文件名
+}
+//取得string类型token所对应的机器指令
+Bytes Lmachine::Opcode(string token)
+{
+	Bytes Op = OpHALT;
+	while (Op < MaxInstuction&&token != OpMemonic[Op])
+		Op++;
+	if (Op < MaxInstuction)
+		return Op;
+	else
+		return OpError;//返回错误指令的代码
 }
 //执行加1操作
 void Lmachine::Increment(Bytes & data)
@@ -28,6 +67,7 @@ void Lmachine::Decrement(Bytes & data)
 {
 	data = (data + 255) % 256;
 }
+//虚拟机执行内存中的汇编指令
 void Lmachine::LmachineRun()
 {
 	Bytes ProgramValue;//保存PC的当前值
@@ -63,6 +103,8 @@ void Lmachine::LmachineRun()
 		case OpINAXB:	//将2进制数写入累加器
 		case OpINAXA:	//将ascii字符写入累加器
 		case OpOUTAXD:	//将累加器数据以10进制形式输出
+			if (Lcpu.Accumulator<128)
+				fprintf
 		case OpOUTAXB:	//将累加器数据以2进制形式输出
 		case OpOUTAXA:	//将累加器数据以ascii字符形式输出
 
@@ -297,12 +339,14 @@ void Lmachine::LmachineRun()
 	if (LcpuStatus==Finished)
 
 }
+//返回机器指令i的助记符,也就是汇编指令
+string Lmachine::GetMemonic(int i)
+{
+		return  OpMemonic[i];
+}
 //主函数
 int main()
 {
 	Lmachine *lmachine=new Lmachine;
 	lmachine->Init();
-	Assembler * assembler = new Assembler;
-
-
 }
