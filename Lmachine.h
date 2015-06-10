@@ -15,6 +15,7 @@ public:
 	/*
 		数据成员
 	*/
+	ostream fout;//输出文件对象
 	string OutFileName;//输出的文件名
 	string CodeFileName;//需要打开的代码文件名
 	CPU Lcpu;//虚拟机的CPU

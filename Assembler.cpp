@@ -21,6 +21,9 @@ void Assembler::Run_Assembler()
 	string Strtoken;
 	TokenType type;
 	BuildSymbolTable();//第一遍扫描 构建符号表
+	/*
+		第2遍扫描，将根据符号表，将源程序写入Memory中
+	*/
 	for (int i = 0; i < LmachineToken.size(); i++)
 	{
 		type = Lexer(LmachineToken[i], Strtoken, operand);
@@ -28,7 +31,7 @@ void Assembler::Run_Assembler()
 		{
 		case ASMCode://汇编指令
 			Op = lmachine->Opcode(Strtoken); //查询汇编指令代表的机器指令
-			if (Op == OpError)
+			if (Op == OpError) //错误指令，或不存在的指令
 			{
 				cout << "error mnemonic " << Strtoken << endl;
 			}

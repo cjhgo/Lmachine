@@ -22,7 +22,7 @@ void Lmachine::Init()
 	cout << "|                                    |" << endl;
 	cout << "|                    By: Leviathan   |" << endl;
 	cout << "--------------------------------------" << endl;
-	cout << "请输入代码文件名          " << endl;
+	cout << "请输入输入文件名          " << endl;
 	cout << "					:    " << endl;
 	cin >>CodeFileName;
 	cout << "请输入输出文件名          " << endl;
@@ -39,12 +39,23 @@ void Lmachine::Init()
 		LmachineAPI();//虚拟机主控制程序
 	else if (Judge == "n" || Judge == "N")
 		LmachineQuit();//退出虚拟机
+	ofstream fout(OutFileName); //新建输出文件
+	if (fout)
+		cout << OutFileName << "文件新建成功" << endl;
 }
 //虚拟机主控制函数
 void Lmachine::LmachineAPI()
 {
 	Assembler *assembler = new Assembler;
 	assembler->Init(CodeFileName);//汇编器初始化，传递代码文件名
+	assembler->Run_Assembler();//运行汇编器
+	LmachineRun();//运行虚拟机
+}
+//设定标志寄存器
+void Lmachine::SetFlags(Bytes Register)
+{
+	Lcpu.Zero = (Register == 0);
+	Lcpu.ProgramCounter = (Register <= 127);
 }
 //取得string类型token所对应的机器指令
 Bytes Lmachine::Opcode(string token)
@@ -56,6 +67,11 @@ Bytes Lmachine::Opcode(string token)
 		return Op;
 	else
 		return OpError;//返回错误指令的代码
+}
+//计算变址地址 X+B
+Bytes Lmachine::Index()
+{
+	return ((Memory[Lcpu.ProgramCounter] + Lcpu.Accumulator) % 256);
 }
 //执行加1操作
 void Lmachine::Increment(Bytes & data)
@@ -73,13 +89,14 @@ void Lmachine::LmachineRun()
 	Bytes ProgramValue;//保存PC的当前值
 	Bytes Carry;//程序进位位的状态
 	Lcpu.Carry = false;
-
+	Lcpu.Zero = false;
+	Lcpu.Sign = false;
 	Lcpu.Accumulator = 0;
 	Lcpu.IndexRegister = 0;
 	Lcpu.BasePointer = 0;
 	Lcpu.StackPointer = 0;
-	Lcpu.ProgramCounter = 0;
-	LcpuStatus = Running;
+	Lcpu.ProgramCounter = 0;//程序开始位置
+	LcpuStatus = Running;//CPU运行状态
 	do
 	{
 		Lcpu.InstructionRegister = Memory[Lcpu.ProgramCounter];//从内存中取指令送入指令寄存器
