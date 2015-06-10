@@ -5,7 +5,7 @@
 #include <boost\regex.hpp>
 
 
-boost::regex Regex("(\s)|([0-9]+)|([A-Z_a-z]*[A-Z_a-z0-9]+)|(;)"); //正则表达式
+boost::regex Regex("\s|([0-9]+)|([A-Z_a-z]*[A-Z_a-z0-9]+)|(;)"); //正则表达式
 boost::smatch what;
 typedef unsigned char Bytes; //一个字节
 #define MemSize 256 //虚拟机内存
@@ -19,7 +19,7 @@ struct SymbolReferenceNode
 //符号定义
 struct Symbol
 {
-	string SymbolName;	//符号地址名
+	char SymbolName[20];	//符号地址名
 	Bytes SymbolAddr;	//符号内存地址
 	SymbolReferenceNode * First;//该符号首次出现
 };
@@ -44,20 +44,7 @@ enum Status
 	ErrorOp,
 	ErrorData,
 };
-//代码字符流
-class Token
-{
-public:
-	Token();
-	Token(int number);
-	Token(string ID);
-	string ID;
-	int Number;
-	bool IsID();
-	bool IsNumber();
-	string GetID();
-	int GetNumber();
-};
+
 //字符流类型
 enum TokenType
 {

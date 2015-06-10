@@ -116,14 +116,14 @@ void Lmachine::LmachineRun()
 		case OpCLEARI://变址寄存器清0
 			Lcpu.IndexRegister = 0;
 			break;
-		case OpINAXD:	//将10进制数写入累加器
-		case OpINAXB:	//将2进制数写入累加器
-		case OpINAXA:	//将ascii字符写入累加器
+		//case OpINAXD:	//将10进制数写入累加器
+		//case OpINAXB:	//将2进制数写入累加器
+		//case OpINAXA:	//将ascii字符写入累加器
 		case OpOUTAXD:	//将累加器数据以10进制形式输出
-			if (Lcpu.Accumulator<128)
-				fprintf
-		case OpOUTAXB:	//将累加器数据以2进制形式输出
-		case OpOUTAXA:	//将累加器数据以ascii字符形式输出
+			if (Lcpu.Accumulator < 128)
+				fout << Lcpu.Accumulator; //写入文件
+		//case OpOUTAXB:	//将累加器数据以2进制形式输出
+		//case OpOUTAXA:	//将累加器数据以ascii字符形式输出
 
 		case OpINCAX://累加器加1，影响标志器
 			Increment(Lcpu.Accumulator);
