@@ -14,8 +14,8 @@ public:
 	Token(string ID);
 	string ID;
 	int Number;
-	bool IsID();
-	bool IsNumber();
+	bool IsID;
+	bool IsNumber;
 	string GetID();
 	int GetNumber();
 };

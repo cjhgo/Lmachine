@@ -3,9 +3,9 @@
 
 #include <string>
 #include <boost\regex.hpp>
+using namespace std;
 
-
-boost::regex Regex("\s|([0-9]+)|([A-Z_a-z]*[A-Z_a-z0-9]+)|(;)"); //正则表达式
+boost::regex Regex("\\s|([0-9]+)|([A-Z_a-z]*[A-Z_a-z0-9]+)|(;)"); //正则表达式
 boost::smatch what;
 typedef unsigned char Bytes; //一个字节
 #define MemSize 256 //虚拟机内存
@@ -19,7 +19,7 @@ struct SymbolReferenceNode
 //符号定义
 struct Symbol
 {
-	char SymbolName[20];	//符号地址名
+	std::string SymbolName;//符号名字
 	Bytes SymbolAddr;	//符号内存地址
 	SymbolReferenceNode * First;//该符号首次出现
 };
@@ -122,7 +122,7 @@ enum Operand
 	OpError,
 };
 //指令助记符
-string OpMemonic[] =
+string OpMemonic[52] =
 {
 	"HALT",	//CPU暂停指令 格式：HALT
 	"CLEARAX",		//累加器清0
@@ -182,6 +182,6 @@ string OpMemonic[] =
 	"JC",//如果C标志为1，跳转到B单元
 	"JNC",//如果C标志为0，跳转到B单元
 	//错误指令
-	"OpError"
+	"OpError",
 };
 #endif
