@@ -16,7 +16,6 @@ void Assembler::Run_Assembler()
 {
 	int labelindex, number;
 	Bytes lc = 0;//地址计数器
-	Operand operand;
 	Bytes Op;
 	string Strtoken;
 	TokenType type;
@@ -26,7 +25,7 @@ void Assembler::Run_Assembler()
 	*/
 	for (int i = 0; i < LmachineToken.size(); i++)
 	{
-		type = Lexer(LmachineToken[i], Strtoken, operand);
+		type = Lexer(LmachineToken[i], Strtoken);
 		switch (type)
 		{
 		case ASMCode://汇编指令
@@ -65,15 +64,13 @@ void Assembler::Run_Assembler()
 	}
 }
 //汇编代码字符流分析
-TokenType Assembler::Lexer(Token token, string &Strtoken, Operand &operand)
+TokenType Assembler::Lexer(Token token, string &Strtoken)
 {
 	TokenType type;
 	Bytes command;
-	Operand operand;
 	if (isalpha(token.GetID()[0])) //是地址标号或汇编指令
 	{
 		command = SearchCmd(token);
-		operand = (Operand)command;
 		if (command == MaxInstuction&&LmachineToken[TokenIndex + 1].GetID() == ":")
 		{
 			type = Lablel;//确定为地址标号的定义
@@ -90,7 +87,7 @@ TokenType Assembler::Lexer(Token token, string &Strtoken, Operand &operand)
 	}
 	else if (isdigit(token.GetID()[0]))
 	{
-		if (token.IsID())
+		if (token.IsID)
 			type = Number;
 	}
 	else
@@ -156,7 +153,6 @@ int Assembler::SearchSymbol(string symbolname, int sign)
 //构造符号表
 void Assembler::BuildSymbolTable()
 {
-	Operand operand;
 	int labelindex;
 	TokenType type;
 	string Strtoken;

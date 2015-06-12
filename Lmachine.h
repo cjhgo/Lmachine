@@ -21,10 +21,12 @@ public:
 	CPU Lcpu;//虚拟机的CPU
 	Status LcpuStatus;//虚拟机CPU的运行状态
 	Bytes Memory[MemSize];//虚拟机内存空间
-
+	LmachineError LError;//虚拟机类型
+	LmachineEndStatus LendStatus;//虚拟机结束时的状态
 	/*
 		成员函数
 	*/
+	Lmachine();//默认无参构造函数
 	void Init();//初始化，以及开始欢迎界面 及用户选项输入
 	string GetMemonic(int i); //返回机器指令i的助记符，也就是汇编指令
 	void LmachineRun();//执行程序

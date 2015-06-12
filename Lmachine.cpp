@@ -353,17 +353,14 @@ void Lmachine::LmachineRun()
 			break;
 		}
 	}while (LcpuStatus == Running);
-	if (LcpuStatus==Finished)
+	if (LcpuStatus == Finished&&LError == NoneError)
+		LendStatus = Success;
+	else
+		LendStatus = Failed;
 
 }
 //返回机器指令i的助记符,也就是汇编指令
 string Lmachine::GetMemonic(int i)
 {
 		return  OpMemonic[i];
-}
-//主函数
-int main()
-{
-	Lmachine *lmachine=new Lmachine;
-	lmachine->Init();
 }

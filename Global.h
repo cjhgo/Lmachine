@@ -1,3 +1,4 @@
+#pragma once
 #ifndef _GLOBAL_H
 #define _GLOBAL_H
 
@@ -41,10 +42,20 @@ enum Status
 {
 	Running,
 	Finished,
-	ErrorOp,
-	ErrorData,
 };
-
+//虚拟机错误类型
+enum LmachineError
+{
+	NoneError,
+	OperandError,
+	DataError,
+};
+//虚拟机运行结束状态
+enum LmachineEndStatus
+{
+	Success,//运行成功
+	Failed,//运行失败
+};
 //字符流类型
 enum TokenType
 {
