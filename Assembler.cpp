@@ -1,15 +1,22 @@
 #include "Assembler.h"
+#include "Lmachine.h"
+using namespace std;
 /*
 --------------------------------------------------------------
 |						汇编器                               |
 --------------------------------------------------------------
 */
+Assembler::Assembler()
+{
+	Lmachine * lmachine = new Lmachine;
+}
 //汇编器初始化
-void Assembler::Init(string codefilename)
+void Assembler::Init(string codefilename,Lmachine *& Reflmachine)
 {
 	TokenIndex = 0;//将Token记号初始化为0
 	Code->open(codefilename);//打开的指定的汇编代码文件
 	ReadLine();//将FILE类型Code名字读取到LmachineToken中
+	lmachine = Reflmachine;
 }
 //运行汇编器
 void Assembler::Run_Assembler()
@@ -23,7 +30,7 @@ void Assembler::Run_Assembler()
 	/*
 		第2遍扫描，将根据符号表，将源程序写入Memory中
 	*/
-	for (int i = 0; i < LmachineToken.size(); i++)
+	for (size_t i = 0; i < LmachineToken.size(); i++)
 	{
 		type = Lexer(LmachineToken[i], Strtoken);
 		switch (type)
@@ -134,8 +141,8 @@ void Assembler::ReadLine()
 //在符号表中查找符号,sign=0,判断是否进行了重复定义，sign=1,是否已经有该符号，进行更新
 int Assembler::SearchSymbol(string symbolname, int sign)
 {
-	int i;
-	for (i = 0; i < SymbolTable.size(); i++)
+	size_t i;
+	for ( i= 0; i < SymbolTable.size(); i++)
 	{
 		if (symbolname == SymbolTable[i].SymbolName) //在符号表中找到该符号
 			break;

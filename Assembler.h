@@ -2,8 +2,9 @@
 #ifndef _ASSEMBLER_H
 #define _ASSEMBLER_H
 #include "Token.h"
-#include "Lmachine.h"
 #include "Global.h"
+using namespace std;
+class Lmachine;
 //汇编器
 class Assembler
 {
@@ -11,8 +12,8 @@ public:
 	/*
 	数据成员
 	*/
-	Lmachine * lmachine;//虚拟机实例指针
-	int TokenIndex;//token记号索引
+	Lmachine * lmachine;
+	size_t TokenIndex;//token记号索引
 	fstream *Code;//要加载的汇编文件
 	vector<Token> LmachineToken; //汇编代码字符流
 	vector<Symbol> SymbolTable;//符号表动态数组
@@ -21,7 +22,7 @@ public:
 	*/
 	Assembler();
 	~Assembler();
-	void Init(string codefilename);//初始化
+	void Init(string codefilename,Lmachine * &lmachine);//初始化
 	TokenType Lexer(Token token, string &Strtoken);//汇编代码字符流分析
 	void ReadLine();//将FILE类型Code名字读取到LmachineToken中
 	void Run_Assembler();	//运行汇编器

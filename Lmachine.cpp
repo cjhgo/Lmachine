@@ -1,16 +1,19 @@
 #include <iostream>
 #include <fstream>
 #include "Lmachine.h"
-#include "Assembler.h"
 using namespace std;
 /*
 --------------------------------------------------------------
 |						虚拟机                               |
 --------------------------------------------------------------
 */
+//默认无参数构造函数
+Lmachine::Lmachine()
+{
 
+}
 //初始化
-void Lmachine::Init()
+bool Lmachine::Init()
 {
 	string Judge;
 	/*
@@ -36,21 +39,18 @@ void Lmachine::Init()
 		cin >> Judge;
 	}
 	if (Judge == "y" || Judge == "Y")
-		LmachineAPI();//虚拟机主控制程序
+	{
+		return true;
+		ofstream fout(OutFileName); //新建输出文件
+		if (fout)
+			cout << OutFileName << "文件新建成功" << endl;
+	}
 	else if (Judge == "n" || Judge == "N")
-		LmachineQuit();//退出虚拟机
-	ofstream fout(OutFileName); //新建输出文件
-	if (fout)
-		cout << OutFileName << "文件新建成功" << endl;
+		return false;
+	else
+		return false;
 }
-//虚拟机主控制函数
-void Lmachine::LmachineAPI()
-{
-	Assembler *assembler = new Assembler;
-	assembler->Init(CodeFileName);//汇编器初始化，传递代码文件名
-	assembler->Run_Assembler();//运行汇编器
-	LmachineRun();//运行虚拟机
-}
+
 //设定标志寄存器
 void Lmachine::SetFlags(Bytes Register)
 {

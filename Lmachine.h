@@ -2,6 +2,7 @@
 #ifndef _LMACHINE_H
 #define _LMACHINE_H
 #include "Global.h"
+#include "Assembler.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -15,7 +16,7 @@ public:
 	/*
 		数据成员
 	*/
-	ostream fout;//输出文件对象
+	ofstream fout;//输出文件对象
 	string OutFileName;//输出的文件名
 	string CodeFileName;//需要打开的代码文件名
 	CPU Lcpu;//虚拟机的CPU
@@ -27,10 +28,9 @@ public:
 		成员函数
 	*/
 	Lmachine();//默认无参构造函数
-	void Init();//初始化，以及开始欢迎界面 及用户选项输入
+	bool Init();//初始化，以及开始欢迎界面 及用户选项输入,初始化成功返回true，否则返回flase
 	string GetMemonic(int i); //返回机器指令i的助记符，也就是汇编指令
 	void LmachineRun();//执行程序
-	void LmachineAPI();//虚拟机主控制函数
 	void Increment(Bytes &data);//执行加1操作
 	void Decrement(Bytes &data);//执行减1操作
 	void SetFlags(Bytes Register);//根据寄存器的值设定标志器
