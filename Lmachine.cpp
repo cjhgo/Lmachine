@@ -7,6 +7,11 @@ using namespace std;
 |						虚拟机                               |
 --------------------------------------------------------------
 */
+//string 转char *
+char * Lmachine::String2Char(string str)
+{
+    char *Cstr=(char*)str.data();
+}
 //默认无参数构造函数
 Lmachine::Lmachine()
 {
@@ -17,7 +22,7 @@ bool Lmachine::Init()
 {
 	string Judge;
 	/*
-		初始化
+        初始化
 	*/
 	cout << "--------------------------------------" << endl;
 	cout << "|         welcome to Lmachine        |" << endl;
@@ -31,7 +36,7 @@ bool Lmachine::Init()
 	cout << "请输入输出文件名          " << endl;
 	cout << "					:    " << endl;
 	cin >> OutFileName;
-	cout << "是否执行 y/n ：" << endl;
+    cout << "是否执行 y/n ：" << endl;
 	cin >> Judge;
 	while (Judge != "y" || Judge != "Y" || Judge != "n" || Judge != "N")
 	{
@@ -41,7 +46,7 @@ bool Lmachine::Init()
 	if (Judge == "y" || Judge == "Y")
 	{
 		return true;
-		ofstream fout(OutFileName); //新建输出文件
+		ofstream fout(String2Char(OutFileName)); //新建输出文件
 		if (fout)
 			cout << OutFileName << "文件新建成功" << endl;
 	}
@@ -121,7 +126,10 @@ void Lmachine::LmachineRun()
 		//case OpINAXA:	//将ascii字符写入累加器
 		case OpOUTAXD:	//将累加器数据以10进制形式输出
 			if (Lcpu.Accumulator < 128)
+			{
+				ofstream fout(String2Char(OutFileName)); //打开文件
 				fout << Lcpu.Accumulator; //写入文件
+			}
 		//case OpOUTAXB:	//将累加器数据以2进制形式输出
 		//case OpOUTAXA:	//将累加器数据以ascii字符形式输出
 

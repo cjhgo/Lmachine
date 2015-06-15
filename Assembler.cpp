@@ -1,5 +1,6 @@
 #include "Assembler.h"
 #include "Lmachine.h"
+#include "boost/regex.hpp"
 using namespace std;
 /*
 --------------------------------------------------------------
@@ -14,7 +15,7 @@ Assembler::Assembler()
 void Assembler::Init(string codefilename,Lmachine *& Reflmachine)
 {
 	TokenIndex = 0;//将Token记号初始化为0
-	Code->open(codefilename);//打开的指定的汇编代码文件
+    Code->open(lmachine->String2Char(codefilename));//打开的指定的汇编代码文件
 	ReadLine();//将FILE类型Code名字读取到LmachineToken中
 	lmachine = Reflmachine;
 }

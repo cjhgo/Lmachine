@@ -1,6 +1,4 @@
 #pragma once
-#ifndef _ASSEMBLER_H
-#define _ASSEMBLER_H
 #include "Token.h"
 #include "Global.h"
 using namespace std;
@@ -30,4 +28,4 @@ public:
 	int  SearchSymbol(string symbolname, int sign);//在符号表中查找符号
 	Bytes SearchCmd(Token token);//查询汇编指令表，返回对应的机器指令，机器指令隐含为指令数组的下标
 };
-#endif
+

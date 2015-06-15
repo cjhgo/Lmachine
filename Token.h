@@ -1,6 +1,5 @@
 #pragma once
-#ifndef _TOKEN_H
-#define _TOKEN_H
+
 #include <iostream>
 #include <string>
 using namespace std;
@@ -19,4 +18,3 @@ public:
 	string GetID();
 	int GetNumber();
 };
-#endif

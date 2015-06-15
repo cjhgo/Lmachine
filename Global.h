@@ -1,13 +1,11 @@
 #pragma once
-#ifndef _GLOBAL_H
-#define _GLOBAL_H
 
 #include <string>
-#include <boost\regex.hpp>
+#include <boost/regex.hpp>
 using namespace std;
 
-boost::regex Regex("\\s|([0-9]+)|([A-Z_a-z]*[A-Z_a-z0-9]+)|(;)"); //正则表达式
-boost::smatch what;
+static boost::regex Regex("\\s|([0-9]+)|([A-Z_a-z]*[A-Z_a-z0-9]+)|(;)"); //正则表达式
+static boost::smatch what;
 typedef unsigned char Bytes; //一个字节
 #define MemSize 256 //虚拟机内存
 #define MaxInstuction 51 //汇编指令数目
@@ -133,7 +131,7 @@ enum Operand
 	OpError,
 };
 //指令助记符
-string OpMemonic[52] =
+static string OpMemonic[52] =
 {
 	"HALT",	//CPU暂停指令 格式：HALT
 	"CLEARAX",		//累加器清0
@@ -195,4 +193,4 @@ string OpMemonic[52] =
 	//错误指令
 	"OpError",
 };
-#endif
+
